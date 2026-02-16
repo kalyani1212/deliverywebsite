@@ -1,0 +1,32 @@
+<!-- src/main/resources/templates/login.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <title>Login — QuickDeliver</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+<script th:src="@{/js/script.js}"></script>
+</head>
+<body>
+  <!-- <div th:replace="fragments/header :: header"></div> -->
+  <main class="center">
+    <div class="card auth-card">
+      <h2>Login with Phone</h2>
+      <p>Enter your phone number and we'll send a one-time code (OTP).</p>
+
+
+      <form action="/send-otp" method="post" id="otpForm">
+        <input name="phone" type="tel" placeholder="+91 98xxxxxxxx" required pattern="[\d+ -]+"/>
+        <div class="row">
+          <button type="submit">Send OTP</button>
+          <button type="button" id="demo-otp" class="muted">Demo OTP</button>
+        </div>
+      </form>
+      <p class="hint">For demo, OTP will be printed in the server console.</p>
+    </div>
+  </main>
+
+  <script th:src="@{/js/script.js}"></script>
+</body>
+</html>

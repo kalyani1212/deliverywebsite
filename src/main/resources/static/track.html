@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Track Order</title></head>
+<body>
+  <h2>Track Order</h2>
+  <div id="info">Loading...</div>
+
+  <script>
+    function getQueryParam(name) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(name);
+    }
+    const orderId = getQueryParam('orderId');
+    if (!orderId) { document.getElementById('info').textContent = 'orderId required in query string'; throw 0; }
+
+    async function loadStatus() {
+      const res = await fetch('/api/orders/' + orderId);
+      const data = await res.json();
+      let html = `<p>Order: ${data.orderId} <br> Status: ${data.status} <br> Total: ₹${data.total}</p>`;
+      if (data.partner) {
+        html += `<p>Partner: ${data.partner.name} (${data.partner.phone}) <br>
+                 Location: ${data.partner.currentLat || '...'}, ${data.partner.currentLng || '...'} <br>
+                 ETA: ${data.partner.etaMinutes || '...'} min</p>`;
+        if (data.partner.currentLat && data.partner.currentLng && data.customerLat && data.customerLng) {
+          const origin = `${data.partner.currentLat},${data.partner.currentLng}`;
+          const dest = `${data.customerLat},${data.customerLng}`;
+          html += `<p><a target="_blank" href="https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${dest}&travelmode=driving">
+                   Open directions in Google Maps</a></p>`;
+        }
+      }
+      document.getElementById('info').innerHTML = html;
+    }
+
+    loadStatus();
+    setInterval(loadStatus, 7000);
+  </script>
+</body>
+</html>

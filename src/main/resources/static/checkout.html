@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Checkout</title>
+</head>
+<body>
+  <h2>Checkout</h2>
+  <div>
+    <label>Name: <input id="name" /></label><br>
+    <label>Phone: <input id="phone" /></label><br>
+    <button id="getLocation">Use my location</button>
+    <p id="locStatus">Location not set</p>
+    <button id="checkoutBtn">Place Order</button>
+    <p id="result"></p>
+  </div>
+
+  <script>
+    let customerLat = null, customerLng = null;
+    document.getElementById('getLocation').addEventListener('click', () => {
+      if (!navigator.geolocation) { alert('Geolocation not supported'); return; }
+      navigator.geolocation.getCurrentPosition(function(pos) {
+        customerLat = pos.coords.latitude;
+        customerLng = pos.coords.longitude;
+        document.getElementById('locStatus').textContent = `Lat: ${customerLat}, Lng: ${customerLng}`;
+      }, function(err) { alert('Location error: ' + err.message); });
+    });
+
+    document.getElementById('checkoutBtn').addEventListener('click', async () => {
+      const name = document.getElementById('name').value || 'Guest';
+      const phone = document.getElementById('phone').value || '';
+
+      if (customerLat == null) { alert('Please get your location first'); return; }
+
+      const body = { customerName: name, customerPhone: phone, customerLat, customerLng };
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      document.getElementById('result').innerHTML =
+        `Order placed. ID: ${data.orderId} <br>
+         Partner: ${data.partner ? data.partner.name + ' (' + data.partner.phone + ')' : 'Assigning...'} <br>
+         ETA: ${data.partner ? data.partner.etaMinutes + ' min' : '-' } <br>
+         <a href="/track.html?orderId=${data.orderId}">Track your order</a>`;
+    });
+  </script>
+</body>
+</html>

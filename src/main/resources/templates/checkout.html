@@ -1,0 +1,28 @@
+<!-- src/main/resources/templates/checkout.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <title>Checkout — QuickDeliver</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+  <div th:insert="fragments/header :: header"></div>
+
+  <main class="container">
+    <h2>Checkout</h2>
+    <form action="/checkout" method="post" id="checkoutForm">
+      <label>Delivery address</label>
+      <input name="address" required placeholder="Street, City, Landmark" />
+      <label>Destination latitude</label>
+      <input name="destLat" type="number" step="any" required placeholder="e.g. 12.9716" />
+      <label>Destination longitude</label>
+      <input name="destLng" type="number" step="any" required placeholder="e.g. 77.5946" />
+      <button type="submit">Place Order</button>
+    </form>
+    <p class="hint">Tip: enter coordinates for demo tracking (use any lat/lng near you).</p>
+  </main>
+
+  <script th:src="@{/js/app.js}"></script>
+</body>
+</html>

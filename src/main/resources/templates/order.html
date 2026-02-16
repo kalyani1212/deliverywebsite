@@ -1,0 +1,76 @@
+<!-- src/main/resources/templates/order.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <title>Order — QuickDeliver</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-sA+QtYy23yXg4YwVST8tU1c3rQ7k5sKkT8H2y1F0kM0=" crossorigin=""/>
+</head>
+<body>
+  <div th:insert="fragments/header :: header"></div>
+
+  <main class="container">
+    <h2>Order Details</h2>
+
+    <div th:if="${order != null}">
+      <p>Order ID: <b th:text="${order.id}">1</b></p>
+      <p>Status: <span th:text="${order.status}">PLACED</span></p>
+      <p>Total: ₹<span th:text="${order.total}">0.00</span></p>
+
+      <h3>Delivery Map</h3>
+      <div id="map" style="height:360px;border-radius:8px"></div>
+
+      <p class="hint">Driver position is simulated (demo). Reload to simulate next update.</p>
+    </div>
+  </main>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-o9N1j6Y0t3oJZ2ga0bJ1Q0m3Z7++Y8G8w5f1iXkz0Xk=" crossorigin=""></script>
+
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    let destLat = /*[[${order.destLat}]]*/ 12.9716;
+    let destLng = /*[[${order.destLng}]]*/ 77.5946;
+    // start point (simulate driver start) slightly offset
+    let driverLat = destLat - 0.02;
+    let driverLng = destLng - 0.02;
+    /*]]>*/
+  </script>
+
+  <script th:src="@{/js/app.js}"></script>
+  <script>
+    // map init & simple simulation
+    document.addEventListener("DOMContentLoaded", () => {
+      if (typeof L === "undefined") return;
+      const map = L.map('map').setView([driverLat, driverLng], 13);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+
+      const driverIcon = L.icon({ iconUrl: '/images/rider.svg', iconSize: [48,48], iconAnchor:[24,24] });
+      const destMarker = L.marker([destLat,destLng]).addTo(map).bindPopup('Destination').openPopup();
+      const driverMarker = L.marker([driverLat,driverLng], {icon: driverIcon}).addTo(map).bindPopup('Driver');
+
+      // simulate movement towards dest
+      function moveStep() {
+        const latDiff = destLat - driverLat;
+        const lngDiff = destLng - driverLng;
+        driverLat += latDiff * 0.05;
+        driverLng += lngDiff * 0.05;
+        driverMarker.setLatLng([driverLat, driverLng]);
+        map.panTo([driverLat, driverLng], {animate:true});
+        if (Math.hypot(latDiff,lngDiff) > 0.0005) {
+          setTimeout(moveStep, 1200);
+        } else {
+          driverMarker.bindPopup("Arrived").openPopup();
+        }
+      }
+      setTimeout(moveStep, 800);
+    });
+  </script>
+</body>
+</html>

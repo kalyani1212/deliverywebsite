@@ -1,0 +1,42 @@
+<!-- src/main/resources/templates/index.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <title>QuickDeliver — Home</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+  <!-- <div th:insert="fragments/header :: header"></div> -->
+
+  <main class="container">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div>
+        <h1>Welcome, <span th:text="${userPhone}">Guest</span> 🎉</h1>
+        <p>Food & Grocery delivered fast</p>
+        <a class="cta" th:href="@{/products}">Browse Products</a>
+      </div>
+      <img th:src="@{/images/rider.svg}" alt="rider" class="hero-img">
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+      <div class="feature">
+        <h3>OTP Login</h3>
+        <p>Fast login via phone OTP (demo SMS prints to server console).</p>
+      </div>
+      <div class="feature">
+        <h3>Real-time Tracking</h3>
+        <p>See live delivery progress on a map (simulated demo).</p>
+      </div>
+      <div class="feature">
+        <h3>Secure Checkout</h3>
+        <p>Save orders to the database and view order history.</p>
+      </div>
+    </section>
+  </main>
+
+  <script th:src="@{/js/script.js}"></script>
+</body>
+</html>

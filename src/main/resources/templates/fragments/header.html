@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<!-- src/main/resources/templates/fragments/header.html -->
+ !-- src/main/resources/templates/fragments/header.html -->
+<div th:fragment="header">
+    <header>
+        <h1>QuickDeliver</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+        </nav>
+    </header>
+</div>
+<nav class="topbar">
+  <div class="brand"><a th:href="@{/}">QuickDeliver</a></div>
+  <div class="navlinks">
+    <a th:href="@{/products}">Products</a>
+    <a th:href="@{/cart}">Cart (<span th:text="${session.cartSize != null ? session.cartSize : 0}">0</span>)</a>
+    <a th:href="@{/login}">Login</a>
+  </div>
+</nav>
+<hr/>
+
+<body>
+    
+</body>
+</html>
